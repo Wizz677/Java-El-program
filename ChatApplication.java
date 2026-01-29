@@ -1,33 +1,28 @@
 package chat;
 
-import java.util.ArrayList;
-import java.util.List;
+public class ChatApplication {
 
-public class ChatRoom {
+    public static void main(String[] args) {
 
-    private List<String> chatHistory = new ArrayList<>();
+        ChatRoom chatRoom = new ChatRoom();
 
-    // synchronized method → only ONE thread can enter at a time
-    public synchronized void sendMessage(String user, String message) {
+        User user1 = new User("Alice", chatRoom);
+        User user2 = new User("Bob", chatRoom);
+        User user3 = new User("Charlie", chatRoom);
 
-        String fullMessage = user + ": " + message;
+        user1.start();
+        user2.start();
+        user3.start();
 
-        chatHistory.add(fullMessage);
-
-        System.out.println(fullMessage);
-
-        // Simulate delay (network / typing)
+        // Wait for all threads to finish
         try {
-            Thread.sleep(500);
+            user1.join();
+            user2.join();
+            user3.join();
         } catch (InterruptedException e) {
-            System.out.println("Thread interrupted");
+            System.out.println("Main thread interrupted");
         }
-    }
 
-    public void showChatHistory() {
-        System.out.println("\n----- CHAT HISTORY -----");
-        for (String msg : chatHistory) {
-            System.out.println(msg);
-        }
+        chatRoom.showChatHistory();
     }
 }
